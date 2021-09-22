@@ -1,1 +1,1 @@
-"web: node serveer.js" 
+"web: node server.js" 
