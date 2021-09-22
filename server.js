@@ -98,8 +98,8 @@ app.get('/shopify/callback', (req, res) => {
 app.get('/orders', async (req, res) => {
   try {
 
-    const urlOrders = 'https://' + shop + '/admin/api/2021-07/orders.json?status=any&fulfillment_status=shipped'
-    const urlCustomers = 'https://' + shop + '/admin/api/2021-07/customers.json?since_id=1'
+    const urlOrders = 'https://' + shop + '/admin/api/2021-07/orders.json?fulfillment_status=shipped'
+    const urlCustomers = 'https://' + shop + '/admin/api/2021-07/customers.json?tag=vip'
 
     const paramsOrders = {
       method: 'GET',
