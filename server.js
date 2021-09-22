@@ -115,7 +115,7 @@ app.get('/orders', async (req, res) => {
       orders: requestOrders.orders
     }
 
-    res.set('Access-Control-Allow-Origin', 'https://john-gradi-store.myshopify.com/')
+    res.set('Access-Control-Allow-Origin', '*')
     res.send(obj)
   } catch (error) {
     console.log(error)
@@ -140,7 +140,7 @@ app.get('/users', async (req, res) => {
     const obj = {
       customers: requestCustomers.customers
     }
-    res.set('Access-Control-Allow-Origin', 'https://john-gradi-store.myshopify.com/')
+    res.set('Access-Control-Allow-Origin', '*')
     res.send(obj)
   } catch (error) {
     console.log(error)
