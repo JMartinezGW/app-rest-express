@@ -99,7 +99,6 @@ app.get('/orders', async (req, res) => {
   try {
 
     const urlOrders = 'https://' + shop + '/admin/api/2021-07/orders.json?fulfillment_status=shipped'
-    const urlCustomers = 'https://' + shop + '/admin/api/2021-07/customers.json?tag=vip'
 
     const paramsOrders = {
       method: 'GET',
@@ -111,6 +110,20 @@ app.get('/orders', async (req, res) => {
       }
     }
 
+    const requestOrders = await request(paramsOrders)
+    const obj = {
+      orders: requestOrders.orders
+    }
+    res.send(obj)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+app.get('/users', async (req, res) => {
+  try {
+    const urlCustomers = 'https://' + shop + '/admin/api/2021-07/customers.json?tag=vip'
+
     const paramsCustomers = {
       method: 'GET',
       url: urlCustomers,
@@ -121,10 +134,8 @@ app.get('/orders', async (req, res) => {
       }
     }
 
-    const requestOrders = await request(paramsOrders)
     const requestCustomers = await request(paramsCustomers)
     const obj = {
-      orders: requestOrders.orders,
       customers: requestCustomers.customers
     }
     res.send(obj)
