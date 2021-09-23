@@ -127,7 +127,7 @@ app.get('/orders', async (req, res) => {
 
 app.get('/users', async (req, res) => {
   try {
-    const urlCustomers = 'https://' + shop + '/admin/api/2021-07/customers.json?tag=vip'
+    const urlCustomers = 'https://' + shop + '/admin/api/2021-07/customers.json?tags=vip'
 
     const paramsCustomers = {
       method: 'GET',
