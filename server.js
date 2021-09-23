@@ -2,10 +2,12 @@ const dotenv = require('dotenv').config()
 const express = require('express')
 const app = express()
 const crypto = require('crypto')
+const getRawBody = require('raw-body')
 const cookie = require('cookie')
 const nonce = require('nonce')()
 const querystring = require('querystring')
 const request = require('request-promise')
+const emailController = require('./emailController')
 
 const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
@@ -13,6 +15,7 @@ const shop = process.env.SHOP
 const scopes = process.env.SCOPES
 const forwardingAddress = process.env.HOST
 let myAccessToken = ''
+const secretKey = '8a018c9de147f264d9170a84899c69bc33c00bf99022ca6588e6ca3a1fdb2d44'
 
 app.get('/shopify', (req, res) => {
   // Shop Name
@@ -147,8 +150,38 @@ app.get('/users', async (req, res) => {
   }
 })
 
+app.post('/orders/create', async (req, res) => {
+  try {
+
+    const hmac = req.get('X-Shopify-Hmac-Sha256')
+    const body = await getRawBody(req)
+
+    const hash = crypto
+      .createHmac('sha256', secretKey)
+      .update(body, 'utf8', 'hex')
+      .digest('base64')
+    if (hash === hmac) {
+      const order = JSON.parse(body.toString())
+      if (!hasCustomerAccount(order)) {
+        emailController.sendEmail(
+          order.contact_email, 
+          'Welcome to john-gradi-store',
+          'We invite you to create an account in our Store.'
+        )
+      }
+      res.set('Access-Control-Allow-Origin', '*')
+      res.sendStatus(200)
+    } else {
+      console.log('Danger! Not from Shopify!')
+      res.sendStatus(403)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
-    console.log('Example app listening on port 3000!')
+    console.log(`Example app listening on port ${port}!`)
 })
