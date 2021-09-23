@@ -162,7 +162,7 @@ app.post('/orders/create', async (req, res) => {
       .digest('base64')
     if (hash === hmac) {
       const order = JSON.parse(body.toString())
-      if (!emailController.hasCustomerAccount(order)) {
+      if (!emailController.hasCustomerAccount(order) || !emailController.hasVerifiedAccount(order)) {
         emailController.sendEmail(
           order.contact_email, 
           'Welcome to john-gradi-store',

@@ -30,3 +30,12 @@ exports.hasCustomerAccount = function (order) {
 
     return false
 }
+
+exports.hasVerifiedAccount = function (order) {
+
+    if (order.customer && order.customer.verified_email) {
+        return true
+    }
+
+    return false
+}
