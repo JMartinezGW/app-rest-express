@@ -101,7 +101,7 @@ app.get('/shopify/callback', (req, res) => {
 app.get('/orders', async (req, res) => {
   try {
 
-    const urlOrders = 'https://' + shop + '/admin/api/2021-07/orders.json'
+    const urlOrders = 'https://' + shop + '/admin/api/2021-07/orders.json?fulfillment_status=shipped'
 
     const paramsOrders = {
       method: 'GET',
