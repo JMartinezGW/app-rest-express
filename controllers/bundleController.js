@@ -59,10 +59,9 @@ const updateInventory = (bundles, shop, accessToken) => {
     try {
         bundles.forEach(async bundle => {
 
-            const variant = getVariantInformation(bundle, shop, accessToken)
+            const variant = await getVariantInformation(bundle, shop, accessToken)
     
             const shopRequestURL = 'https://' + shop + '/admin/api/2021-07/inventory_levels/set.json';
-    
             const form = {
                 location_id: 65419149489,
                 inventory_item_id: variant.inventory_item_id,
@@ -79,7 +78,7 @@ const updateInventory = (bundles, shop, accessToken) => {
                 body: form
             }
     
-            const req = await request(paramsOrders)
+            await request(paramsOrders)
     
         });
     } catch (error) {
