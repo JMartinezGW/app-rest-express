@@ -7,14 +7,15 @@ const cookie = require('cookie')
 const nonce = require('nonce')()
 const querystring = require('querystring')
 const request = require('request-promise')
-const emailController = require('./emailController')
+const emailController = require('./controllers/emailController')
+const bundleController = require('./controllers/bundleController')
 
 const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
 const shop = process.env.SHOP
 const scopes = process.env.SCOPES
 const forwardingAddress = process.env.HOST
-let myAccessToken = ''
+const myAccessToken = process.env.ACCESS_TOKEN
 const secretKey = '8a018c9de147f264d9170a84899c69bc33c00bf99022ca6588e6ca3a1fdb2d44'
 
 app.get('/shopify', (req, res) => {
@@ -77,9 +78,8 @@ app.get('/shopify/callback', (req, res) => {
 
       request.post(accessTokenRequestUrl, {json: accessTokenPayload})
           .then((accessTokenResponse) => {
-              myAccessToken = accessTokenResponse.access_token;
               const shopRequestURL = 'https://' + shop + '/admin/api/2020-04/shop.json';
-              const shopRequestHeaders = {'X-Shopify-Access-Token': myAccessToken};
+              const shopRequestHeaders = {'X-Shopify-Access-Token': accessTokenResponse.access_token};
 
               request.get(shopRequestURL, {headers: shopRequestHeaders})
                   .then((shopResponse) => {
@@ -102,7 +102,6 @@ app.get('/orders', async (req, res) => {
   try {
 
     const urlOrders = 'https://' + shop + '/admin/api/2021-07/orders.json?fulfillment_status=fulfilled'
-
     const paramsOrders = {
       method: 'GET',
       url: urlOrders,
@@ -170,6 +169,7 @@ app.post('/orders/create', async (req, res) => {
           'We invite you to create an account in our Store.'
         )
       }
+      bundleController.checkAllProducts(order, shop, myAccessToken)
       res.set('Access-Control-Allow-Origin', '*')
       res.sendStatus(200)
     } else {
